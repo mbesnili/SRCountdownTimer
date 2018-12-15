@@ -24,6 +24,7 @@ class ViewController: UIViewController {
         countdownTimer.timerFinishingText = "End"
         countdownTimer.lineWidth = 4
         countdownTimer.trailLineWidth = 2
+        countdownTimer.start(beginingValue: 30, interval: 1)
         
     }
 }
