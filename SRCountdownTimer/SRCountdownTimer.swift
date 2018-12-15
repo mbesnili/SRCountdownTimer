@@ -34,8 +34,10 @@ import UIKit
 
 public class SRCountdownTimer: UIView {
     @IBInspectable public var lineWidth: CGFloat = 2.0
+    @IBInspectable public var trailLineWidth: CGFloat = 2.0
     @IBInspectable public var lineColor: UIColor = .black
     @IBInspectable public var trailLineColor: UIColor = UIColor.lightGray.withAlphaComponent(0.5)
+    @IBInspectable public var lineCap: CGLineCap = .round
     
     @IBInspectable public var isLabelHidden: Bool = false
     @IBInspectable public var labelFont: UIFont?
@@ -109,10 +111,23 @@ public class SRCountdownTimer: UIView {
         let context = UIGraphicsGetCurrentContext()
         let radius = (rect.width - lineWidth) / 2
         let currentAngle = CGFloat((.pi * 2 * elapsedTime) / totalTime)
-
-        context?.setLineWidth(lineWidth)
+        
+        // Trail line
+        context?.setLineWidth(trailLineWidth)
+        context?.beginPath()
+        context?.addArc(
+            center: CGPoint(x: rect.midX, y:rect.midY),
+            radius: radius,
+            startAngle: -.pi / 2,
+            endAngle: currentAngle - .pi / 2,
+            clockwise: false)
+        context?.setStrokeColor(trailLineColor.cgColor)
+        context?.strokePath()
+        
 
         // Main line
+        context?.setLineCap(lineCap)
+        context?.setLineWidth(lineWidth)
         context?.beginPath()
         context?.addArc(
             center: CGPoint(x: rect.midX, y:rect.midY),
@@ -123,16 +138,7 @@ public class SRCountdownTimer: UIView {
         context?.setStrokeColor(lineColor.cgColor)
         context?.strokePath()
 
-        // Trail line
-        context?.beginPath()
-        context?.addArc(
-            center: CGPoint(x: rect.midX, y:rect.midY),
-            radius: radius,
-            startAngle: -.pi / 2,
-            endAngle: currentAngle - .pi / 2,
-            clockwise: false)
-        context?.setStrokeColor(trailLineColor.cgColor)
-        context?.strokePath()
+
     }
 
     // MARK: Public methods

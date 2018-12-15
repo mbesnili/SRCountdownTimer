@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         countdownTimer.labelTextColor = UIColor.red
         countdownTimer.timerFinishingText = "End"
         countdownTimer.lineWidth = 4
-        countdownTimer.start(beginingValue: 15, interval: 1)
+        countdownTimer.trailLineWidth = 2
         
     }
 }
