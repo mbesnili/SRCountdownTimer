@@ -154,6 +154,7 @@ public class SRCountdownTimer: UIView {
      *   - interval: Interval between reducing the counter(1 second by default)
      */
     public func start(endingDate: Date, interval: TimeInterval = 1) {
+        self.beginDate = Date()
         self.endingDate = endingDate
         self.interval = interval
 
