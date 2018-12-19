@@ -50,9 +50,14 @@ public class SRCountdownTimer: UIView {
     public var useMinutesAndSecondsRepresentation = false
 
     private var timer: Timer?
-    private var beginingValue: Int = 1
-    private var totalTime: TimeInterval = 1
-    private var elapsedTime: TimeInterval = 0
+    private var beginDate: Date = Date()
+    private var endingDate: Date = Date()
+    private var totalTime: TimeInterval {
+        return endingDate.timeIntervalSince(beginDate)
+    }
+    private var elapsedTime: TimeInterval {
+        return Date().timeIntervalSince(beginDate)
+    }
     private var interval: TimeInterval = 1 // Interval which is set by a user
     private let fireInterval: TimeInterval = 0.01 // ~60 FPS
 
@@ -148,13 +153,11 @@ public class SRCountdownTimer: UIView {
      *   - beginingValue: Value to start countdown from.
      *   - interval: Interval between reducing the counter(1 second by default)
      */
-    public func start(beginingValue: Int, interval: TimeInterval = 1) {
-        self.beginingValue = beginingValue
+    public func start(endingDate: Date, interval: TimeInterval = 1) {
+        self.endingDate = endingDate
         self.interval = interval
 
-        totalTime = TimeInterval(beginingValue) * interval
-        elapsedTime = 0
-        currentCounterValue = beginingValue
+        currentCounterValue = Int(endingDate.timeIntervalSinceNow.rounded(FloatingPointRoundingRule.up))
 
         timer?.invalidate()
         timer = Timer(timeInterval: fireInterval, target: self, selector: #selector(SRCountdownTimer.timerFired(_:)), userInfo: nil, repeats: true)
@@ -204,12 +207,11 @@ public class SRCountdownTimer: UIView {
 
     // MARK: Private methods
     @objc private func timerFired(_ timer: Timer) {
-        elapsedTime += fireInterval
-
-        if elapsedTime < totalTime {
+        let currentDate = Date()
+        if  currentDate <= endingDate {
             setNeedsDisplay()
 
-            let computedCounterValue = beginingValue - Int(elapsedTime / interval)
+            let computedCounterValue = Int(endingDate.timeIntervalSinceNow.rounded(.up))
             if computedCounterValue != currentCounterValue {
                 currentCounterValue = computedCounterValue
             }
